@@ -25,7 +25,6 @@ const Login = (props) => {
       console.log('CLEANUP');
       clearTimeout(identifier)
     }
-     
   }, [enteredEmail, enteredPassword]);
 
   const emailChangeHandler = (event) => {
