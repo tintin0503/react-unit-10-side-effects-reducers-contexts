@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
@@ -43,7 +43,7 @@ const Login = (props) => {
   // const [emailIsValid, setEmailIsValid] = useState();
   // const [enteredPassword, setEnteredPassword] = useState('');
   // const [passwordIsValid, setPasswordIsValid] = useState();
-  // const [formIsValid, setFormIsValid] = useState(false);
+  const [formIsValid, setFormIsValid] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
     value: '',
@@ -54,6 +54,25 @@ const Login = (props) => {
     value: '',
     isValid: null,
   });
+
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
+
+  useEffect(() => {
+    //add setTime
+    const identifier = setTimeout(() => {
+      console.log('Checking form validate!');
+      setFormIsValid(
+        emailIsValid && passwordIsValid
+      );
+    }, 500);
+
+    // cleanup function
+    return () => {
+      console.log('CLEANUP');
+      clearTimeout(identifier)
+    }
+  }, [emailIsValid, passwordIsValid]);
 
   const emailChangeHandler = (event) => {
     dispatchEmail({
@@ -66,7 +85,7 @@ const Login = (props) => {
     dispatchPassword({
       type: "USER_INPUT",
       val: event.target.value,
-    })
+    });
   };
 
   const validateEmailHandler = () => {
@@ -114,7 +133,7 @@ const Login = (props) => {
           />
         </div>
         <div className={classes.actions}>
-          <Button type="submit" className={classes.btn} disabled={!emailState.isValid || !passwordState.isValid}>
+          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
             Login
           </Button>
         </div>
